@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../public/partials/head %>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+    <script>
+    $(function() {
+      $( "#datepicker" ).datepicker();
+    });
+    </script>
+    
+</head>
+<body class="container">
+
+    <header>
+        <% include ../public/partials/header %>
+    </header>
+
+    <main>
+        <div class="container">
+
+          <div class="row">
+              <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong>Edit Trip</strong>
+                    </h2>
+                    <hr>
+                </div>                  
+                <div class="col-md-12">              
+                   <form role="form" action="/editCurrentTrip" method="post" style="max-width: 300px">	
+					            <input class = "form-control" name = "objectID" type="hidden" value="<%= tripInfo.objectID %>">
+					            <br>	
+					            <input class = "form-control" name = "city" type="text" value="<%= tripInfo.city %>">
+					            <br>
+                      <input class = "form-control" name ="date" type="text" id="datepicker" placeholder = "Date" value="<%= tripInfo.date %>">
+					            <br>	
+					            <input class = "form-control" name = "purpose" type="text" value="<%= tripInfo.purpose %>">
+					            <br>	
+					            <input class = "form-control" name = "highlights" type="text" value="<%= tripInfo.highlights %>">
+                      <br>	
+					            <input class = "form-control" name = "peopleMet" type="text" value="<%= tripInfo.peopleMet %>">
+					            <br>
+					            <button type = "submit" class="btn-primary">Submit</button>
+				            </form>
+				          <br>
+						      <br>
+						      <br>
+                  <form role="form" action="/deleteTrip" method="post" style="max-width: 300px">	
+                    <input class = "form-control" name = "objectID" type="hidden" value="<%= tripInfo.objectID %>">					            
+                    <button type = "submit" class="btn-danger">Delete Trip</button>
+				            </form>
+					      </div>
+                <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+      <!-- /.container -->
+    </main>
+
+    <footer>
+        <% include ../public/partials/footer %>
+    </footer>
+    
+</body>
+</html>

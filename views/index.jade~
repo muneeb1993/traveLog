@@ -1,0 +1,16 @@
+extends layout
+
+block content
+  .container
+    if (!user)
+      a(href="/login") Login
+      br
+      a(href="/register") Register
+    if (user)
+      p You are currently logged in as #{user.username}
+      br
+      a(href="/addTrip") Add Trip
+      br
+      a(href="/allTrips") All Your Trips
+      br
+      a(href="/logout") Logout

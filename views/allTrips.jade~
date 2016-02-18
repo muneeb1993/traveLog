@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  .container
+    h1 All Your Trips
+    br
+    if (allTripsResult)
+        each trip in allTripsResult
+            h3 Trip to: #{trip.city}
+            p Purpose: #{trip.purpose}
+            p People met: #{trip.peopleMet}
+            p Highlights: #{trip.highlights}
+            form(role='form', action="/editTrip",method="post", style='max-width: 300px;')
+              .form-group
+                  input.form-control(type='hidden', name="objectID", value = "#{trip._id}")
+              .form-group
+                input.form-control(type='hidden', name="username", value="#{user.username}")
+              .form-group
+                  input.form-control(type='hidden', name="city", value = "#{trip.city}")
+              .form-group
+                  input.form-control(type='hidden', name="purpose", value = "#{trip.purpose}")
+              .form-group
+                  input.form-control(type='hidden', name="highlights", value = "#{trip.highlights}")
+              .form-group
+                  input.form-control(type='hidden', name="peopleMet", value = "#{trip.peopleMet}")
+              button.btn.btn-default(type='submit') Edit
+            br
+    else
+        p You don't have any trips yet
+  

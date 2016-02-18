@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../public/partials/head %>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <script>
+  $(function() {
+    $( "#datepicker" ).datepicker();
+  });
+  </script>
+
+  <!-- My Scripts -->
+	
+	<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCaRBmomj3hLZQFw4XzdKHiG7BOsZhk-lY"></script>
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+	
+	<script>
+	var directionsDisplay;
+	var directionsService = new google.maps.DirectionsService();
+	var map;
+	
+
+	function initialize() {
+	  directionsDisplay = new google.maps.DirectionsRenderer();
+	  var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+	  var mapOptions = {
+		zoom:7,
+		center: chicago
+	  };
+	
+	  map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
+	  directionsDisplay.setMap(map);
+	}
+	
+	function initializeFromListener() {
+		var input = document.getElementById('from');
+		var options = {
+			types: ['(cities)']
+		};
+		
+		
+		var autocomplete = new google.maps.places.Autocomplete(input, options);		
+	}
+	
+
+
+	google.maps.event.addDomListener(window, 'load', initialize);
+	google.maps.event.addDomListener(window, 'load', initializeFromListener);
+	google.maps.event.addDomListener(window, 'load', initializeToListener);
+	</script>
+
+</head>
+<body class="container">
+
+    <header>
+        <% include ../public/partials/header %>
+    </header>
+
+    <main>
+        <div class="container">
+
+          <div class="row">
+              <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong>Add Trip</strong>
+                    </h2>
+                    <hr>
+                </div>                  
+                <div class="col-md-12">
+						      <form role="form" action="/addTrip" method="post" style="max-width: 300px">	
+							      <input class = "form-control" name = "username" type="hidden" placeholder="Username" value="<%= user.username %>">
+                    <br>
+								    <input class = "form-control" name ="date" type="text" id="datepicker" placeholder = "Date">
+                    <br>
+							      <input class = "form-control" name = "city" id = "from" type="text" placeholder="City" value="">
+							      <br>
+							      <input class = "form-control" name = "purpose" type="text" placeholder="Purpose" value="">
+							      <br>
+                    <input class = "form-control" name = "highlights" type="text" placeholder="Highlights" value="">
+                    <br>
+                    <input class = "form-control" name = "peopleMet" type="text" placeholder="People Met" value="">
+							      <br>
+							      <button type = "submit" class="btn-primary">Add Trip</button>
+						      </form>
+						      <br>
+						      <br>
+					      </div>
+                <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+      <!-- /.container -->
+    </main>
+
+    <footer>
+        <% include ../public/partials/footer %>
+    </footer>
+    
+</body>
+</html>

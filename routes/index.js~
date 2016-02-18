@@ -1,0 +1,270 @@
+var express = require('express');
+var passport = require('passport');
+var Account = require('../models/account');
+var router = express.Router();
+
+var ObjectId = require('mongodb').ObjectID;
+
+// **************** ADDED MYSELF ****************************** //
+var bodyParser = require('body-parser');
+
+// Create application/x-www-form-urlencoded parser
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
+
+// Connect to Database
+var MongoClient = require('mongodb').MongoClient, assert = require('assert');
+
+// Connection URL
+var url = 'mongodb://localhost:27017/passport_local_mongoose_express4';
+
+// *********************************************************** //
+
+
+router.get('/', function (req, res) {
+    var userExists = false;
+    if(req.user) userExists = true;
+    res.render('index', { user : req.user, userExists : userExists });
+});
+
+router.get('/register', function(req, res) {
+    res.render('register', { });
+});
+
+router.post('/register', function(req, res, next) {
+    Account.register(new Account({ username : req.body.username }), req.body.password, function(err, account) {
+        if (err) {
+          return res.render("register", {info: "Sorry. That username already exists. Try again."});
+        }
+
+        passport.authenticate('local')(req, res, function () {
+            req.session.save(function (err) {
+                if (err) {
+                    return next(err);
+                }
+                res.redirect('/');
+            });
+        });
+    });
+});
+
+
+router.get('/login', function(req, res) {
+    res.render('login', { user : req.user });
+});
+
+router.post('/login', passport.authenticate('local'), function(req, res, next) {
+    req.session.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/');
+    });
+});
+
+router.get('/logout', function(req, res, next) {
+    req.logout();
+    req.session.save(function (err) {
+        if (err) {
+            return next(err);
+        }
+        res.redirect('/');
+    });
+});
+
+// GET for addTrip
+router.get('/addTrip', function(req, res) {
+    res.render('addTrip', { user : req.user });
+});
+
+// POST for addTrip
+router.post('/addTrip', urlencodedParser, function (req, res) {
+
+	// Prepare output in JSON format
+	response = {
+		username:req.body.username,
+		city:req.body.city,
+    date:req.body.date,
+		purpose:req.body.purpose,
+		highlights:req.body.highlights,
+		peopleMet:req.body.peopleMet
+	};
+
+	
+	// Use connect method to connect to the Server
+	MongoClient.connect(url, function(err, db) {
+		assert.equal(null, err);
+		console.log("Connected correctly to server");
+
+		// Get the trips collection
+		var collectionTrips = db.collection('trips');
+
+		// Create a trip
+		var trip1 = {username: response.username, city: response.city, date: response.date, purpose: response.purpose, highlights: response.highlights, peopleMet: response.peopleMet};
+
+	    // Insert some users
+        collectionTrips.insert(trip1, function (err, result) {
+          if (err) {
+            console.log(err);
+          } else {
+            console.log('Inserted %d documents into the "trips" collection. The documents inserted with "_id" are:', result.length, result);
+            res.redirect('/allTrips');
+          }
+          db.close(); // Close connection
+        }); // insert
+	}); // Ends MongoClient.connect
+	
+//	res.end(JSON.stringify(response));
+//    res.redirect('/');
+})
+
+router.get('/allTrips', function(req, res) {
+    var userTest = req.user;
+    if ( typeof userTest !== 'undefined' && userTest )
+    {
+      //do stuff if userTest is defined and not null
+      
+    }
+    else
+    {
+      res.render('login', { });
+    }
+
+//    .find({"by":"tutorials point"}).pretty()
+
+    var allTripsResult;
+    // Use connect method to connect to the Server
+	MongoClient.connect(url, function(err, db) {
+		assert.equal(null, err);
+		console.log("Connected correctly to server");
+
+		// Get the trips collection
+		//var allTrips = db.trips.find();
+
+		var query = {}; // select all docs
+		var collection = db.collection('trips');
+
+//        collection.find().toArray(function(err, docs) {		
+        collection.find({"username":req.user.username}).toArray(function(err, docs) {
+
+            allTripsResult = docs;
+
+            res.render('allTrips', { user : req.user , allTripsResult : allTripsResult });
+			
+			// Can send JSON from here		
+//			res.end(JSON.stringify(docs));
+	
+		});
+	
+		//Close connection
+		//db.close();
+
+	}); // Ends MongoClient.connect
+
+    // Render should come here
+});
+
+// POST edit Trip
+router.post('/editTrip', function(req, res) {
+    // Prepare output in JSON format
+	  response = {
+      objectID:req.body.objectID,
+		  username:req.body.username,
+		  city:req.body.city,
+      date:req.body.date,
+		  purpose:req.body.purpose,
+		  highlights:req.body.highlights,
+		  peopleMet:req.body.peopleMet
+	  };
+    res.render('editTrip', { user : req.user, tripInfo:response});
+});
+
+
+// POST edit Trip
+router.post('/editCurrentTrip', function(req, res) {
+    // Prepare output in JSON format
+	  response = {
+      objectID:req.body.objectID,
+		  username:req.body.username,
+		  city:req.body.city,
+      date:req.body.date,		  
+      purpose:req.body.purpose,
+		  highlights:req.body.highlights,
+		  peopleMet:req.body.peopleMet
+	  };
+
+    // Use connect method to connect to the Server
+	  MongoClient.connect(url, function(err, db) {
+		  assert.equal(null, err);
+		  console.log("Connected correctly to server");
+
+		  // Get the trips collection
+		  var collectionTrips = db.collection('trips');
+        db.collection('trips').update(
+            { "_id": ObjectId(response.objectID)},
+            { $set: { "city": response.city, "date": response.date, "purpose" : response.purpose, "highlights" : response.highlights, "peopleMet" : response.peopleMet } }, 
+            function(err, results) {
+              console.log(results);
+              res.redirect('/allTrips');
+         });
+        
+/*
+        collectionTrips.update({ "_id":response.objectID }, { $set : { "city":response.city } }, function(err, result) {
+            if (err)
+                //do something.
+                console.log("error in updating object");
+            else{
+                console.log("Successfully updated object");
+                res.redirect('/');
+            }
+        });
+    */ 
+  }); // Ends MongoClient.connect
+   
+});
+
+
+
+// POST edit Trip
+router.post('/deleteTrip', function(req, res) {
+    // Prepare output in JSON format
+	  response = {
+      objectID:req.body.objectID
+	  };
+
+    // Use connect method to connect to the Server
+	  MongoClient.connect(url, function(err, db) {
+		  assert.equal(null, err);
+		  console.log("Connected correctly to server");
+
+		  // Get the trips collection
+		  var collectionTrips = db.collection('trips');
+        db.collection('trips').remove(
+          { "_id": ObjectId(response.objectID)}, function(err, result) {
+            if (err) {
+                console.log(err);
+            }
+            console.log(result);
+            db.close();
+            res.redirect('/allTrips');
+        });
+
+
+/*
+deleteOne(
+            { "_id": ObjectId(response.objectID)}, 
+            function(err, results) {
+              console.log(results);
+              
+*/
+  }); // Ends MongoClient.connect
+   
+});
+
+
+router.get('/ping', function(req, res){
+    res.status(200).send("pong!");
+});
+
+module.exports = router;
+

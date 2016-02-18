@@ -1,0 +1,46 @@
+alert("hi there");
+
+
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCaRBmomj3hLZQFw4XzdKHiG7BOsZhk-lY"></script>
+
+<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true&libraries=places"></script>
+	
+document.getElementById('city').value = "Muneeb";
+
+var directionsDisplay;
+var directionsService = new google.maps.DirectionsService();
+var map;
+
+
+function initialize() {
+  directionsDisplay = new google.maps.DirectionsRenderer();
+  var chicago = new google.maps.LatLng(41.850033, -87.6500523);
+  var mapOptions = {
+	zoom:7,
+	center: chicago
+  };
+
+  map = new google.maps.Map(document.getElementById('googleMap'), mapOptions);
+  directionsDisplay.setMap(map);
+}
+
+function initializeFromListener() {
+	var input = document.getElementById('city');
+	var options = {
+		types: ['(cities)']
+	};
+	
+	
+	var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+	google.maps.event.addListener(autocomplete, 'place_changed', function () {
+          var place = autocomplete.getPlace();
+		document.getElementById('cityLat').value = place.geometry.location.lat();
+		document.getElementById('cityLng').value = place.geometry.location.lng();             
+      });		
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+google.maps.event.addDomListener(window, 'load', initializeFromListener);
+google.maps.event.addDomListener(window, 'load', initializeToListener);
+

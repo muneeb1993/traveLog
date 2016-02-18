@@ -1,0 +1,29 @@
+extends layout
+
+block content        
+    br
+    .container
+      div.row
+        if (user)
+          p You are currently logged in as #{user.username}
+          br
+          form(role='form', action="/addTrip",method="post", style='max-width: 300px;')
+            .form-group
+                input.form-control(type='hidden', name="username", placeholder='Enter Username', value="#{user.username}")
+            .form-group
+                input.form-control(type='text', name="city", placeholder='City')
+            .form-group
+                input.form-control(type='date', name="datepick", id = "datepick")
+            .form-group
+                input.form-control(type='text', name="purpose", placeholder='Purpose')
+            .form-group
+                input.form-control(type='text', name="highlights", placeholder='Highlights')
+            .form-group
+                input.form-control(type='text', name="peopleMet", placeholder='People Met')
+            button.btn.btn-default(type='submit') Submit
+            &nbsp;
+            a(href='/')
+              button.btn.btn-primary(type="button") Cancel
+        
+        else
+          p: #[span Please ] #[a(href="/login") login] #[ before adding a trip.]

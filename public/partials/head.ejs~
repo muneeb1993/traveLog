@@ -1,0 +1,20 @@
+<meta charset="UTF-8">
+<title>Super Awesome</title>
+
+<!-- CSS (load bootstrap from a CDN) -->
+<!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"> -->
+<link href="partials/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- Custom CSS -->
+<link href="css/business-casual.css" rel="stylesheet">
+
+<!-- jQuery -->
+<script src="partials/js/jquery.js"></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="partials/js/bootstrap.min.js"></script>
+
+
+<style>
+    body    { padding-top:50px; }
+</style>

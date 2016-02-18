@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% include ../public/partials/head %>
+</head>
+<body class="container">
+
+    <header>
+        <% include ../public/partials/header %>
+    </header>
+
+
+          form(role='form', action="/login",method="post", style='max-width: 300px;')
+      .form-group
+          input.form-control(type='text', name="username", placeholder='Enter Username')
+      .form-group
+        input.form-control(type='password', name="password", placeholder='Password')
+      button.btn.btn-default(type='submit') Submit
+      &nbsp;
+      a(href='/')
+        button.btn.btn-primary(type="button") Cancel
+        
+
+
+
+
+
+    <main>
+        <div class="container">
+
+          <div class="row">
+              <div class="box">
+                <div class="col-lg-12">
+                    <hr>
+                    <h2 class="intro-text text-center">
+                        <strong>Login</strong>
+                    </h2>
+                    <hr>
+                </div>                  
+                <div class="col-md-6">
+						      <form role="form" action="/login" method="post" style="max-width: 300px">	
+							      <input class = "form-control" name = "username" type="text" placeholder="Enter Username">
+							      <br>
+                    <input class = "form-control" name = "password" type="password" placeholder="Password">
+                    <br>
+							      <button type = "submit" class="btn-primary">Login</button>
+							      <button type = "button" class="btn-primary">Cancel</button>
+						      </form>
+						      <br>
+						      <br>
+					      </div>
+					      <div class="col-md-6">
+						      <div id="googleMap" style="width:600px;height:400px;"></div>
+					      </div>
+                <div class="clearfix"></div>
+              </div>
+          </div>
+      </div>
+      <!-- /.container -->
+    </main>
+
+    <footer>
+        <% include ../public/partials/footer %>
+    </footer>
+    
+</body>
+</html>
